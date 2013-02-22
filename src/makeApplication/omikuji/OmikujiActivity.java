@@ -1,13 +1,17 @@
 package makeApplication.omikuji;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +27,13 @@ public class OmikujiActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.omikuji);
 
+		SharedPreferences pref = 
+				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean value = pref.getBoolean("button", false);
+		
+		Button btn = (Button)findViewById(R.id.button1);
+		btn.setVisibility(value ? View.VISIBLE : View.INVISIBLE);
+	  
 		this.omikujibox.setImageView((ImageView) findViewById(R.id.imageView1));
 		for (int i = 0; i < 20; i++) {
 			omikujiShelf[i] = new OmikujiParts(R.drawable.result2,
@@ -106,8 +117,15 @@ public class OmikujiActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		
+		/*
 		Toast toast = Toast.makeText(this, item.getTitle(), Toast.LENGTH_LONG);
 		toast.show();
+		*/
+		
+		if (item.getItemId() == R.id.item1) {
+			Intent intent = new Intent(this, OmikujiPreferenceActivity.class);
+			startActivity(intent);
+		}
 		
 		return super.onOptionsItemSelected(item);
 	}
