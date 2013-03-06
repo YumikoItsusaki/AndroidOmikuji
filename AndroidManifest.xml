@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name="OmikujiPreferenceActivity"></activity>
+        <activity android:theme="@android:style/Animation" android:name="AboutActivity"></activity>
     </application>
 
 </manifest>

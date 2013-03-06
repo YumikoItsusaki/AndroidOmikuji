@@ -1,9 +1,15 @@
 package makeApplication.omikuji;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -16,7 +22,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class OmikujiActivity extends Activity {
+public class OmikujiActivity extends Activity implements SensorEventListener  {
+	
+	private SensorManager manager;
 
 	private OmikujiParts[] omikujiShelf = new OmikujiParts[20];
 
@@ -26,6 +34,8 @@ public class OmikujiActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.omikuji);
+		
+		this.manager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
 		SharedPreferences pref = 
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -126,7 +136,50 @@ public class OmikujiActivity extends Activity {
 			Intent intent = new Intent(this, OmikujiPreferenceActivity.class);
 			startActivity(intent);
 		}
+		else {
+			Intent intent = new Intent(this,AboutActivity.class);
+			startActivity(intent);
+			
+		}
 		
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		this.manager.unregisterListener(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		List<Sensor>sensors = this.manager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+		if (0 < sensors.size()) {
+			this.manager.registerListener(this, sensors.get(0),
+			SensorManager.SENSOR_DELAY_NORMAL);
+		}
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		// TODO Auto-generated method stub
+		
+		float value = event.values[0];
+		if (7 < value) {
+			Toast toast = Toast.makeText(this, "‰Á‘¬“x :" + value, 
+					Toast.LENGTH_LONG)	;
+			toast.show();
+		}
+		
 	}
 }
